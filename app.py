@@ -8,29 +8,124 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 from fsm import TocMachine
-from utils import send_text_message
 
+from utils import *
 load_dotenv()
 
-
 machine = TocMachine(
-    states=["user", "state1", "state2"],
+    states=["init", "start", "end", "info", "ready_player1", "ready_player2","player1_first", "player2_first", "player1_second", "player2_second", "player1_third", "player2_third", "player1_to_2", "player2_to_1"],
     transitions=[
         {
             "trigger": "advance",
-            "source": "user",
-            "dest": "state1",
-            "conditions": "is_going_to_state1",
+            "source": "*",
+            "dest": "start",
+            "conditions": "is_going_to_start",
         },
         {
             "trigger": "advance",
-            "source": "user",
-            "dest": "state2",
-            "conditions": "is_going_to_state2",
+            "source": "start",
+            "dest": "ready_player1",
+            "conditions": "is_going_to_ready_player1",
         },
-        {"trigger": "go_back", "source": ["state1", "state2"], "dest": "user"},
+        {
+            "trigger": "advance",
+            "source": "ready_player1",
+            "dest": "ready_player2",
+            "conditions": "is_going_to_ready_player2",
+        },
+        {
+            "trigger": "advance",
+            "source": "ready_player2",
+            "dest": "player1_first",
+            "conditions": "is_going_to_player1_first",
+        },
+        {
+            "trigger": "advance",
+            "source": "player1_first",
+            "dest": "player1_second",
+            "conditions": "is_going_to_player1_second",
+        },
+        {
+            "trigger": "advance",
+            "source": "player1_first",
+            "dest": "player1_to_2",
+            "conditions": "is_going_to_player1_to_2",
+        },
+        {
+            "trigger": "advance",
+            "source": "player1_second",
+            "dest": "player1_third",
+            "conditions": "is_going_to_player1_third",
+        },
+        {
+            "trigger": "advance",
+            "source": "player1_second",
+            "dest": "player1_to_2",
+            "conditions": "is_going_to_player1_to_2",
+        },
+        {
+            "trigger": "advance",
+            "source": "player1_third",
+            "dest": "player1_to_2",
+            "conditions": "is_going_to_player1_to_2",
+        },
+        {
+            "trigger": "advance",
+            "source": "player1_to_2",
+            "dest": "player2_first",
+            "conditions": "is_going_to_player2_first",
+        },
+        {
+            "trigger": "advance",
+            "source": "player2_first",
+            "dest": "player2_second",
+            "conditions": "is_going_to_player2_second",
+        },
+        {
+            "trigger": "advance",
+            "source": "player2_first",
+            "dest": "player2_to_1",
+            "conditions": "is_going_to_player2_to_1",
+        },
+        {
+            "trigger": "advance",
+            "source": "player2_second",
+            "dest": "player2_third",
+            "conditions": "is_going_to_player2_third",
+        },
+        {
+            "trigger": "advance",
+            "source": "player2_second",
+            "dest": "player2_to_1",
+            "conditions": "is_going_to_player2_to_1",
+        },
+        {
+            "trigger": "advance",
+            "source": "player2_third",
+            "dest": "player2_to_1",
+            "conditions": "is_going_to_player2_to_1",
+        },
+        {
+            "trigger": "advance",
+            "source": "player2_to_1",
+            "dest": "end",
+            "conditions": "is_going_to_end",
+        },
+        {
+            "trigger": "advance",
+            "source": "player2_to_1",
+            "dest": "player1_first",
+            "conditions": "is_going_to_player1_first",
+        },
+        {
+            "trigger": "advance",
+            "source": "init",
+            "dest": "info",
+            "conditions": "is_going_to_info",
+        },
+        {"trigger": "go_init", "source": ["end", "info"], "dest": "init"},
     ],
-    initial="user",
+    initial="init",
     auto_transitions=False,
     show_conditions=True,
 )
@@ -102,10 +197,8 @@ def webhook_handler():
             continue
         print(f"\nFSM STATE: {machine.state}")
         print(f"REQUEST BODY: \n{body}")
-        response = machine.advance(event)
-        if response == False:
-            send_text_message(event.reply_token, "Not Entering any State")
 
+        machine.advance(event)
     return "OK"
 
 
@@ -118,3 +211,4 @@ def show_fsm():
 if __name__ == "__main__":
     port = os.environ.get("PORT", 8000)
     app.run(host="0.0.0.0", port=port, debug=True)
+    
