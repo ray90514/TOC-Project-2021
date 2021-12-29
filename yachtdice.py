@@ -15,7 +15,7 @@ class YachtDice():
         self.player2_bonus_sum = 0
         self.player2_name = "B"
         self.player2_id = "0"
-        self.turn = 12
+        self.turn = 1
         self.rest_times = 0
         self.reply_json = json.load(open('reply.json'))
     def change_name(self):
