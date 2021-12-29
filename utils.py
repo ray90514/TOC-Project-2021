@@ -4,7 +4,7 @@ import yachtdice
 from linebot import LineBotApi, WebhookParser
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage
 
-channel_access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
+channel_access_token = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
 
 image_link = ["https://imgur.com/S22uIPp.png", "https://imgur.com/9sfxDeL.png", "https://imgur.com/0LoX59v.png", "https://imgur.com/pTUCZr0.png", "https://imgur.com/LglELJm.png", "https://imgur.com/dpKxKHw.png"]
 
