@@ -55,7 +55,9 @@ class YachtDice():
         elif dice_type == 9:
             return count[4] == 1 and count[1] == 1
         elif dice_type == 10:
-            return (count[1] == 5 and self.dice_state.count(3) and self.dice_state.count(4)) or (count[1] == 3 and not (self.dice_state.count(1) or self.dice_state.count(6)))
+            return (count[1] == 5 and self.dice_state.count(3) and self.dice_state.count(4)) \
+            or (count[1] == 3 and self.dice_state.count(3) and self.dice_state.count(4) and \
+                ((self.dice_state.count(1) and self.dice_state.count(2)) or (self.dice_state.count(2) and self.dice_state.count(5)) or (self.dice_state.count(5) and self.dice_state.count(6))))
         elif dice_type == 11:
             return count[1] == 5 and self.dice_state.count(1) != self.dice_state.count(6)
         elif dice_type == 12:

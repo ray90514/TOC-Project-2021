@@ -10,6 +10,9 @@ class TocMachine(GraphMachine):
     def is_going_to_info(self, event):
         text = event.message.text
         return text.lower() == "?"
+    def is_going_to_new_state(self, event):
+        text = event.message.text
+        return text.lower() == "new"
     def is_going_to_start(self, event):
         text = event.message.text
         return text.lower() == "start"

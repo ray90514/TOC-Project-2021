@@ -13,8 +13,15 @@ from utils import *
 load_dotenv()
 
 machine = TocMachine(
-    states=["init", "start", "end", "info", "ready_player1", "ready_player2","player1_first", "player2_first", "player1_second", "player2_second", "player1_third", "player2_third", "player1_to_2", "player2_to_1"],
+    states=["new_state","init", "start", "end", "info", "ready_player1", "ready_player2","player1_first", "player2_first", "player1_second", "player2_second", "player1_third", "player2_third", "player1_to_2", "player2_to_1"],
     transitions=[
+        {
+            "trigger": "advance",
+            "source": "start",
+            "dest": "new_state",
+            "conditions": "is_going_to_new_state",
+        }
+        ,
         {
             "trigger": "advance",
             "source": "*",
@@ -204,7 +211,7 @@ def webhook_handler():
 
 @app.route("/show-fsm", methods=["GET"])
 def show_fsm():
-    #machine.get_graph().draw("fsm.svg", prog="dot", format="svg")
+    machine.get_graph().draw("fsm.png", prog="dot", format="png")
     return send_file("fsm.png", mimetype="image/png")
 
 
